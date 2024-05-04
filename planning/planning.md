@@ -37,5 +37,22 @@ maybe we can reconcile the two.
 
 also boring and locks us into a posts-based ui
 
+## stages
+
+### stage 1
+
+and a linktree thing to the cmhoc subs and discords
+
+### stage two
+
+and
+lasy idea for now
+an email newsletter
+where leaders can send emails to their party
+and general cmhoc emails for every1
+cuz if i have that i am 283738% more likely to know whats going on and to debaye
+
+persona, place where people can write info about their character
+
 
 
