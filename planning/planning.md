@@ -39,6 +39,8 @@ also boring and locks us into a posts-based ui
 
 ## stages
 
+### stage 1
+
 and a linktree thing to the cmhoc subs and discords
 
 ### stage two
