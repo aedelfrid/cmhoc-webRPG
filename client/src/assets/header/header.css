@@ -20,10 +20,14 @@
     width: 3rem;
 }
 
-.header-content {}
+.header-content {
+    margin-left: 1.5rem;
+}
 
 .header-content-title {
-
+    color: #1a202c;
+    font-size: 1.25rem;
+    line-height: 1.25;
 }
 
 .header-content-welcome {}
