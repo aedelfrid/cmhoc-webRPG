@@ -1,31 +1,25 @@
-import './header.css'
-import { useState } from "react";
-import hocEmblem from "./hocEmblem.svg"
-import hamburger from "./hamburger.svg"
+import { GiHamburgerMenu } from 'react-icons/gi';
+import { useState } from 'react';
+import hocEmblem from './hocEmblem.svg';
 
 function Header() {
-    const username = "aedelfrid"
+  const username = 'georgeWashSUX';
 
-    let loggedIn = true
-    
-    return (
-        <>
-         <div className="header">
-            <div className="header-emblem-wrapper">
-                <img className="header-emblem" src={hocEmblem}></img>
-            </div>
+  let loggedIn = true;
 
-            <div className="header-content">
-                <p className='header-content-title'>Canadian Model House of Commons</p>
-                {loggedIn && <p className='header-content-welcome'>Welcome, {username}.</p>}
-            </div>
-            
-            <div className="header-hamburger-wrapper">
-                <img className="header-hamburger" src={hamburger}></img>
-            </div>
-         </div>
-        </>
-    )
+  return (
+    <>
+      <div className="px-10 py-2 flex items-center justify-between border-b">
+        <img width={30} src={hocEmblem}></img>
+
+        <div className="header-content">
+          <p className="text-3xl">Canadian Model House of Commons</p>
+          {loggedIn && <p className="text-center">Welcome, {username}.</p>}
+        </div>
+        <GiHamburgerMenu size={30} />
+      </div>
+    </>
+  );
 }
 
-export default Header
+export default Header;
