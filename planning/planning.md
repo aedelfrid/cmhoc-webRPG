@@ -37,13 +37,45 @@ maybe we can reconcile the two.
 
 also boring and locks us into a posts-based ui
 
-## stages
+## features/pages 
 
-### stage 1
+### stage one
+
+#### home page
+
+first draft
+
+![first draft](mockup1.png)
+
+when logged in the Log in button will turn into a log out
+
+buttons added to feed to go straight to grading a post
+
+![logged in home page](logged-in-mockup1.png)
 
 and a linktree thing to the cmhoc subs and discords
 
+#### login page
+    for admins/graders in stage one
+
+#### grading portal
+    grading page
+    api pull from reddit
+    publish to database or spreadsheet
+    track what posts have been graded
+    seperate between different subreddits/tags
+
+
 ### stage two
+
+open login/sign up for non-admins
+
+character page with simple bio
+
+ability to submit to feed from the site
+    reuse grading portal?
+
+### stage three
 
 and
 lasy idea for now
@@ -53,6 +85,21 @@ and general cmhoc emails for every1
 cuz if i have that i am 283738% more likely to know whats going on and to debaye
 
 persona, place where people can write info about their character
+
+character attributes
+    charisma
+    law knowledge
+    organization
+    etc...
+
+character quick actions
+    press button to barnstorm
+    press button to hold fundraiser
+    etc...
+
+get user activity from discord
+
+gamification
 
 
 
