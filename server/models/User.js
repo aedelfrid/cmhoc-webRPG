@@ -3,9 +3,9 @@ const path = require('path')
 require("dotenv").config({ path: path.resolve(__dirname, '../.env') });
 
 class User {
-    newUser() {
+    userAuth() {
         if (perms == "admin") {
-            this.scope = ['edit', 'read', 'sumbit']
+            this.scope = ['edit', 'read', 'submit']
         }
 
         authCode = snoowrap.getAuthUrl({
