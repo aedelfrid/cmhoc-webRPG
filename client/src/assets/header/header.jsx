@@ -14,7 +14,14 @@ function Header() {
 
         <div className="header-content">
           <p className="text-3xl">Canadian Model House of Commons</p>
-          {loggedIn && <p className="text-center">Welcome, {username}.</p>}
+          {loggedIn ? (
+            <p className="text-center">Welcome, {username}!</p>
+          ) : (
+            <div className='flex justify-center items-center'>
+              <p className="text-lg p-1">Welcome! </p>
+              <p className="text-xl p-1">Please login.</p>
+            </div>
+          )}
         </div>
         <GiHamburgerMenu size={30} />
       </div>
