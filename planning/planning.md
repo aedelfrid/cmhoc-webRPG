@@ -101,5 +101,59 @@ get user activity from discord
 
 gamification
 
+I gpt'd the following
+
+`const fetch = require('node-fetch');
+
+// Function to fetch posts and comments for a subreddit
+async function fetchSubredditData(subreddit) {
+const currentUTC = new Date();
+const oneDayAgo = new Date(currentUTC);
+oneDayAgo.setDate(currentUTC.getDate() - 1);
+
+const currentUnixTimestamp = Math.floor(currentUTC.getTime() / 1000);
+const oneDayAgoUnixTimestamp = Math.floor(oneDayAgo.getTime() / 1000);
+const response = await fetch (https://api.reddit.com/r/${subreddit}/new?limit=100);
+
+const data = await response.json();
+
+    const filteredData = data.data.children.filter(item => {
+        const createdUtc = item.data.created_utc;
+        return createdUtc > oneDayAgoUnixTimestamp && createdUtc < currentUnixTimestamp;
+    });
+
+    const formattedData = filteredData.map(item => {
+        const { author, created_utc, title, body } = item.data;
+        const parent = item.data.parent_id ? title : null;
+
+        return {
+            username: author || '[deleted]',
+            datetime: new Date(created_utc * 1000).toISOString(),
+            text: title || body,
+            parent: parent
+        };
+    });
+
+    return formattedData;
+} catch (error) {
+    console.error('Error fetching subreddit data:', error);
+    return [];
+}
+}
+
+// List of subreddits
+const subreddits = ['cmhoc', 'cmhocpress', 'electionscmhoc'];
+
+// Fetch data for each subreddit
+const allData = {};
+subreddits.forEach(async subreddit => {
+allData[subreddit] = await fetchSubredditData(subreddit);
+});
+
+// Output data as JSON (You can use the data wherever needed)
+console.log(JSON.stringify(allData, null, 2));
+`
+dm me for user agent, make sure to replace YOUR_USER_AGENT with the env var
+
 
 
