@@ -11,6 +11,7 @@ const postSchema = new Schema(
         fullname: {
             type: String,
             required: true,
+            unique: true,
         },
         title: {
             type: String,
@@ -34,8 +35,14 @@ const postSchema = new Schema(
     }
 )
 
-postSchema.methods.upSert = async function ( redditPost ) {
-    const { fullname } = redditPost
+postSchema.methods.upSert = async function (redditPost) {
+    const { 
+        fullname,
+        title,
+        author,
+        subreddit,
+        text, 
+    } = redditPost
 
     if (!this.findOne({ fullname })) {
         const newPost = await this.create({

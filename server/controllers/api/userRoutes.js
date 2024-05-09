@@ -22,3 +22,5 @@ router.post("/login", async (req, res) => {
     const token = signToken(userData);
     return { token, userData };
 });
+
+module.exports = router;
