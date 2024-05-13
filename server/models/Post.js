@@ -20,13 +20,12 @@ const postSchema = new mongoose.Schema({
     },
     selftext: {
         type: String,
-        required: true,
     },
     isMarked: Boolean
 
 });
 
-postSchema.methods.upsert = async function (redditPost) {
+postSchema.statics.upsert = async function (redditPost) {
     // take posts in reddit format and upsert to db
     const {
         subreddit,
