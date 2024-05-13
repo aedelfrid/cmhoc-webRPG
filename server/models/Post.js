@@ -1,66 +1,56 @@
 const mongoose = require("mongoose")
-const { Schema, model, ObjectId } = mongoose;
 
-const postSchema = new Schema(
-    {
-        id: {
-            type: mongoose.Types.ObjectId,
-            required: true,
-            unique: true,
-        },
-        fullname: {
-            type: String,
-            required: true,
-            unique: true,
-        },
-        title: {
-            type: String,
-            required: true,
-        },
-        author: {
-            type: String,
-            required: true,
-        },
-        subreddit: {
-            type: String,
-            required: true,
-        },
-        text: {
-            type: String,
-            required: true,
-        },
-        isGraded: {
-            type: Boolean,
-        }
-    }
-)
+const postSchema = new mongoose.Schema({
+    name: {
+        type: String,
+        required: true,
+        unique: true,
+    },
+    title: {
+        type: String,
+        required: true,
+    },
+    author: {
+        type: String,
+        required: true,
+    },
+    subreddit: {
+        type: String,
+        required: true,
+    },
+    selftext: {
+        type: String,
+        required: true,
+    },
+    isMarked: Boolean
 
-postSchema.methods.upSert = async function (redditPost) {
-    const { 
-        fullname,
+});
+
+postSchema.methods.upsert = async function (redditPost) {
+    // take posts in reddit format and upsert to db
+    const {
+        subreddit,
+        selftext,
         title,
         author,
-        subreddit,
-        text, 
-    } = redditPost
+        name
+    } = redditPost;
 
-    if (!this.findOne({ fullname })) {
-        const newPost = await this.create({
-            id: new mongoose.Types.ObjectId(),
-            fullname,
+    let isStored = await this.findOne({ name: name })
+
+    if (!isStored) {
+        let newPost = await this.create({
+            name,
+            selftext,
+            subreddit: subreddit.Subreddit.display_name,
             title,
-            author,
-            subreddit,
-            text,
+            author: author.RedditUser.name
         });
-        return newPost;
-    }
+
+        console.log(newPost)
+    };
 };
 
-const Post = model('Post', postSchema);
+const Post = mongoose.model("Post", postSchema);
 
 module.exports = Post;
-
-// ping reddit on page load or every 10 mins
-// reddit api to buffer to database
-// in buffer, iterate over buffer to check if theres a copy in db

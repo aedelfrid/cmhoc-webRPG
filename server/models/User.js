@@ -1,23 +1,23 @@
-const { Schema, model } = require('mongoose');
+const mongoose = require("mongoose");
+const { bcrypt } = require("bcrypt");
 
-const userSchema = new Schema(
-    {
-        username: {
-            type: String,
-            required: true,
-            unique: true,
-        },
-        password: {
-            type: String,
-            required: true,
-            minlength: 5,
-        },
-        isAdmin: {
-            type: Boolean,
-            required: true,
-        }
-    }
-);
+const userSchema = new mongoose.Schema({
+    id: {
+        type: mongoose.Types.ObjectId,
+        required: true,
+        unique: true,
+    },
+    username: {
+        type: String,
+        required: true,
+        unique: true,
+    },
+    password: {
+        type: String,
+        required: true,
+    },
+    isAdmin: Boolean
+})
 
 userSchema.pre('save', async function (next) {
     if (this.isNew || this.isModified('password')) {
@@ -31,9 +31,6 @@ userSchema.methods.isCorrectPassword = async function (password) {
     return bcrypt.compare(password, this.password);
 };
 
-const User = model('User', userSchema);
+const User = mongoose.model("User", userSchema)
 
 module.exports = User;
-
-// connect to reddit?
-// OAUTH?

@@ -1,28 +1,47 @@
-const path = require('path');
-const express = require("express")
-const routes = require('./controllers');
-const ViteExpress = require("vite-express");
+const express = require("express");
+const snoowrap = require("snoowrap");
+require('dotenv').config();
+const { Post, User } = require("./models");
 
+const mongoose = require("mongoose");
 
+class Server {
+    constructor() {
+        this.app = express()
+        this.reddit = new snoowrap({
+            userAgent: "gets reddit posts and notes whether they have been marked",
+            clientId: process.env.R_CLIENT_ID,
+            clientSecret: process.env.R_CLIENT_SECRET,
+            refreshToken: process.env.R_REFRESH_TOKEN,
+        })
+        this.PORT = 3002 || process.env.PORT
+    };
 
-require("dotenv").config();
+    getSubmissions = async function () {
+        // get submissions from reddit and upsert them to db
+        await this.reddit.getNew("cmhoc")
+            .map(post => Post.upsert(post))
+    };
 
-const app = express();
-const db = require("./config/connection.js");
+    start = async function () {
+        const URI = process.env.URI;
+        mongoose.connect(URI);
 
-const PORT = process.env.PORT || 3002;
+        mongoose.connection.once("open", () => {
+            this.app.listen(this.PORT, () => {
+                this.getSubmissions();
+                console.log(`Listening on port ${this.PORT}`);
+                //setTimeout(getSubmissions, 1000 * 60 * 60 * 24);
+            })
+        })
+    };
+}
 
-app.use(express.urlencoded({ extended: false }));
-app.use(express.json());
+s = new Server;
 
-app.use(routes);
+s.start();
 
-app.get('/', (req, res) =>
-    res.sendFile(path.join(__dirname, '../client/index.html'))
-);
-
-db.once("open", () => {
-    ViteExpress.listen(app, PORT, () => {
-        console.log(`Example app listening on port ${PORT}`)
-    });
-});
+// (async () => {
+//     await s.reddit.getNew("cmhoc", {limit: 1})
+//         .map(post => console.log(post))
+// })()
