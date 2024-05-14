@@ -41,9 +41,9 @@ postSchema.statics.upsert = async function (redditPost) {
         let newPost = await this.create({
             name,
             selftext,
-            subreddit: subreddit.Subreddit.display_name,
+            subreddit: await subreddit.Subreddit?.display_name,
             title,
-            author: author.RedditUser.name
+            author: await author.RedditUser?.name
         });
 
         console.log(newPost)
