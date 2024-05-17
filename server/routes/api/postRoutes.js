@@ -12,3 +12,5 @@ router.post("/mark", function (req, res) {
 router.get("/refresh", function (req, res) {
     // runs getSubmissions to check for new posts, then returns posts from db
 })
+
+module.exports = router;
