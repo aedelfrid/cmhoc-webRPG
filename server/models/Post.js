@@ -25,13 +25,11 @@ const postSchema = new mongoose.Schema({
 
 });
 
-postSchema.statics.upsert = async function (redditPost) {
+postSchema.statics.upsert = async function (redditPost, author, subreddit) {
     // take posts in reddit format and upsert to db
     const {
-        subreddit,
         selftext,
         title,
-        author,
         name
     } = redditPost;
 
@@ -41,12 +39,10 @@ postSchema.statics.upsert = async function (redditPost) {
         let newPost = await this.create({
             name,
             selftext,
-            subreddit: await subreddit.Subreddit?.display_name,
+            subreddit,
             title,
-            author: await author.RedditUser?.name
+            author,
         });
-
-        console.log(newPost)
     };
 };
 

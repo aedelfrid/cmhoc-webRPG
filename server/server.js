@@ -20,7 +20,11 @@ class Server {
     getSubmissions = async function () {
         // get submissions from reddit and upsert them to db
         await this.reddit.getNew("cmhoc")
-            .map(post => Post.upsert(post))
+            .map(post => {
+                let author = post.author.name;
+                let subreddit = post.subreddit.display_name;
+                Post.upsert(post, author, subreddit);
+            })
     };
 
     start = async function () {
@@ -31,7 +35,7 @@ class Server {
             this.app.listen(this.PORT, () => {
                 this.getSubmissions();
                 console.log(`Listening on port ${this.PORT}`);
-                //setTimeout(getSubmissions, 1000 * 60 * 60 * 24);
+                setTimeout(() => this.getSubmissions(), 1000 * 60 * 60 * 24);
             })
         })
     };
@@ -43,5 +47,11 @@ s.start();
 
 // (async () => {
 //     await s.reddit.getNew("cmhoc", {limit: 1})
-//         .map(post => console.log(post))
+//         .map(async (post) => {
+//             let author = post.author.name
+//             let subreddit = post.subreddit.display_name;
+//             console.log(post)
+//             console.log(author)
+//             console.log(subreddit)
+//         })
 // })()
