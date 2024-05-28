@@ -2,6 +2,7 @@ const express = require("express");
 const snoowrap = require("snoowrap");
 require('dotenv').config();
 const { Post, User } = require("./models");
+const router = require("./routes")
 
 const mongoose = require("mongoose");
 
@@ -30,6 +31,8 @@ class Server {
     start = async function () {
         const URI = process.env.URI;
         mongoose.connect(URI);
+
+        this.app.use(router)
 
         mongoose.connection.once("open", () => {
             this.app.listen(this.PORT, () => {

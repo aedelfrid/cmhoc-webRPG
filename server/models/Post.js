@@ -36,7 +36,7 @@ postSchema.statics.upsert = async function (redditPost, author, subreddit) {
     let isStored = await this.findOne({ name: name })
 
     if (!isStored) {
-        let newPost = await this.create({
+        await this.create({
             name,
             selftext,
             subreddit,
