@@ -1,12 +1,14 @@
 const express = require("express");
-const router = express.Router();
+const posts = express.Router();
 const { Post } = require("../../models")
 
-router.get("/", function (req, res) {
+const { authMiddleware } = require('../../utils/auth')
+
+posts.get("/", authMiddleware,  function (req, res) {
     // retrieves posts from db based on pagination params
 })
 
-router.post("/mark", function (req, res) {
+posts.post("/mark", authMiddleware, function (req, res) {
     // notes a post as marked in db
 
     let post = req.post;
@@ -16,8 +18,8 @@ router.post("/mark", function (req, res) {
     return res.sendStatus(200);
 })
 
-router.get("/refresh", function (req, res) {
+posts.get("/refresh", authMiddleware, function (req, res) {
     // runs getSubmissions to check for new posts, then returns posts from db
 })
 
-module.exports = router;
+module.exports = posts;
