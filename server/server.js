@@ -1,64 +1,51 @@
 const express = require("express");
-const snoowrap = require("snoowrap")
-require('dotenv').config()
-const { Post, User } = require("./models");
-const routes = require("./routes")
+const { ApolloServer } = require("@apollo/server");
+const { expressMiddleware } = require('@apollo/server/express4');
+const { authMiddleware } = require("./utils/Auth")
+const path = require("path");
+const cors = require("cors");
+
+process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
+
+require("dotenv").config();
+
+const { typeDefs, resolvers } = require("./schemas/");
+const db = require("./config/connection");
 
 
+const app = express();
+const PORT = process.env.PORT || 3002;
+const server = new ApolloServer({
+    typeDefs,
+    resolvers,
+});
 
-const mongoose = require("mongoose");
 
-async function getSubmissions() {
-    // get submissions from reddit and upsert them to db
-    await reddit.getNew("cmhoc")
-        .map(post => {
-            let author = post.author.name;
-            let subreddit = post.subreddit.display_name;
-            Post.upsert(post, author, subreddit);
-        })
+const startApolloServer = async () => {
+    await server.start();
+
+    app.use(express.urlencoded({ extended: false }));
+    app.use(express.json());
+    app.use(cors());
+
+    app.use('/graphql', expressMiddleware(server, {
+        context: authMiddleware
+    }));
+
+    if (process.env.NODE_ENV === 'production') {
+        app.use(express.static(path.join(__dirname, '../client/dist')));
+
+        app.get('*', (req, res) => {
+            res.sendFile(path.join(__dirname, '../client/dist/index.html'));
+        });
+    };
+
+    db.once("open", () => {
+        app.listen(PORT, () => {
+            console.log(`API server running on port ${PORT}!`);
+            console.log(`🌍 Now listening on localhost:${PORT}/graphql`);
+        });
+    });
 };
 
-class Server {
-    constructor() {
-        this.app = express();
-        this.reddit = new snoowrap({
-            userAgent: "gets reddit posts and notes whether they have been marked",
-            clientId: process.env.R_CLIENT_ID,
-            clientSecret: process.env.R_CLIENT_SECRET,
-            refreshToken: process.env.R_REFRESH_TOKEN,
-        });
-        this.PORT = 3002 || process.env.PORT;
-    };
-
-    start = async function () {
-        const URI = process.env.URI;
-        mongoose.connect(URI);
-
-        this.app.use(express.urlencoded({ extended: true }));
-        this.app.use(express.json());
-        this.app.use(routes)
-
-        mongoose.connection.once("open", () => {
-            this.app.listen(this.PORT, () => {
-                getSubmissions();
-                console.log(`Listening on port ${this.PORT}`);
-                setTimeout(() => this.getSubmissions(), 1000 * 60 * 60 * 24);
-            })
-        })
-    };
-}
-
-s = new Server;
-
-s.start();
-
-// (async () => {
-//     await s.reddit.getNew("cmhoc", {limit: 1})
-//         .map(async (post) => {
-//             let author = post.author.name
-//             let subreddit = post.subreddit.display_name;
-//             console.log(post)
-//             console.log(author)
-//             console.log(subreddit)
-//         })
-// })()
+startApolloServer();
