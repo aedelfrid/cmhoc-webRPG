@@ -1,70 +1,44 @@
 const typeDefs = `
+    # Object types
 
-  # Object types
+    type User {
+        _id: ID
+        username: String
+        membership: Membership
+    }
 
-  type User {
-    _id: ID
-    username: String!
-    email: String!
-    avatar: String
-    messages: [Message]
-    comments: [Comment]
-  }
+    type Party {
+        _id: ID
+        name: String
+    }
 
-  type Message {
-    _id: ID!
-    messageAuthor: String!
-    messageText: String!
-    createdAt: String!
-  }
+    type Membership {
+        party: Party
+        role: String
+    }
 
-  type Auth {
-    token: ID!
-    user: User
-  }
+    # input types
 
-  type Comment {
-    _id: ID!
-    content: String!
-    commenter: String!
-    createdAt: String!
-  }
+    input japInput {
+        username: String
+        party: String
+        role: String
+    }
 
- # Input types
+    input registerPartyInput {
+        partyName: String
+    }
 
-  input userInput {
-    username: String!
-    email: String!
-    password: String!
-  }
+    # Queries & Mutations
 
-  input messageInput {
-    messageText: String!
-    messageAuthor: String!
-  }
+    type Query {
+        parties(): Party
+    }
 
-  input CommentInput {
-    content: String!
-    userID: ID!
-  }
-
-  # Queries & Mutations
-
-  type Query {
-    me: User
-    user(username: String!): User
-    lesson(id: ID!): Lesson
-    problem(id: ID!): Problem
-    commentsByUser(userId: ID!): [Comment]
-  }
-
-  type Mutation {
-    login(email: String!, password: String!): Auth
-    googleLogin(credential: String!): Auth
-    addUser(userData: userInput!): Auth
-    addMessage(messageData: messageInput): User
-    addComment(commentData: CommentInput!): User
-  }
+    type Mutation {
+        japarty(japData: japInput): User
+        registerParty(partyData: registerPartyInput): Party
+    }
 
 `;
 
