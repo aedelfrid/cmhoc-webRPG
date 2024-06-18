@@ -3,29 +3,49 @@ const { signToken, decodeToken, AuthenticationError } = require('../utils/Auth')
 
 const resolvers = {
     Query: {
-        parties: async (_) => {
-            return await Party.find()
-        }
+        me: async (_, __, context) => {
+            if (context.user) {
+                return await User.findOne({ _id: context.user._id });
+            }
+            throw new AuthenticationError('You need to be logged in!');
+        },
+        user: async (_, { username }) => {
+            return await User.findOne({ username: username });
+        },
     },
     Mutation: {
-        japarty: async (_, {username, party, role}) => {
-            let user = await User.findOne({ username })
+        signUp: async (_, { userData }) => {
+            const { username, email, password } = userData;
+
+            const user = await User.create({
+                username,
+                email,
+                password
+            });
 
             if (!user) {
-                return await User.create({ username, membership: {
-                    party: await Party.findOne({ party }),
-                    role
-                }})
+                return res.status(400).json({ message: 'Something is wrong!' });
             }
 
-           return user.updateOne({membership: {
-                party: await Party.findOne(party),
-                role
-            }})
+            const token = signToken(user);
+            return { token, user };
         },
-        registerParty: async (_, { partyName }) => {
-           return await Party.create({ name: partyName })
-        }
+        login: async (_, { email, password }) => {
+            const user = await User.findOne({ email });
+
+            if (!user) {
+                throw new AuthenticationError('No user with this email found!');
+            }
+
+            const correctPw = await user.isCorrectPassword(password);
+
+            if (!correctPw) {
+                throw new AuthenticationError('Incorrect password!');
+            }
+
+            const token = signToken(user);
+            return { token, user };
+        },
     },
 };
 

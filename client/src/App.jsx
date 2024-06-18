@@ -1,15 +1,18 @@
 import { useState } from 'react'
+import { ApolloProvider } from '@apollo/client';
+import { client } from '../utils/apolloClient';
 import Header from './assets/header/header'
+import Login from './assets/logIn'
 
 import './App.css'
 
 function App() {
-  const [count, setCount] = useState(0)
 
   return (
-    <>
-      <Header></Header>
-    </>
+    <ApolloProvider client={client}>
+      <Header/>
+      <Login/>
+    </ApolloProvider>
   )
 }
 

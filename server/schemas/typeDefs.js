@@ -4,7 +4,11 @@ const typeDefs = `
     type User {
         _id: ID
         username: String
+        email: String
+        password: String
         membership: Membership
+        influence: Number
+
     }
 
     type Party {
@@ -15,6 +19,11 @@ const typeDefs = `
     type Membership {
         party: Party
         role: String
+    }
+
+    type Auth {
+        token: ID!
+        user: User
     }
 
     # input types
@@ -29,15 +38,24 @@ const typeDefs = `
         partyName: String
     }
 
+    # input types
+
+    input userInput {
+        username: String!
+        email: String!
+        password: String!
+    }
+
     # Queries & Mutations
 
     type Query {
-        parties(): Party
+        me: User
+        user(username: String!): User
     }
 
     type Mutation {
-        japarty(japData: japInput): User
-        registerParty(partyData: registerPartyInput): Party
+        login(email: String!, password: String!): Auth
+        signUp(userData: userInput)
     }
 
 `;

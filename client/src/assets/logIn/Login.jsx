@@ -1,7 +1,12 @@
-import { useState } from 'react'
+import React, { useState } from 'react'
+import { useMutation } from '@apollo/client';
+import { LOGIN_USER } from '../../utils/mutations';
+
+import Auth from '../../utils/auth';
 
 function Login() {
     const [formState, setFormState] = useState({ email: '', password: '' })
+    const [login, { error, loginData }] = useMutation(LOGIN_USER);
 
     const loginFormHandler = async (event) => {
         // Stop the browser from submitting the form so we can do so with JavaScript
@@ -9,18 +14,27 @@ function Login() {
 
         if (email && password) {
             // Send the e-mail and password to the server
-            const response = await fetch('/api/users/login', {
-                method: 'POST',
-                body: JSON.stringify({ email, password }),
-                headers: { 'Content-Type': 'application/json' },
-            });
+            try {
+                const { email, password } = formState;
+                const { data } = await login({
+                    variables: { email, password },
+                });
+                console.log(data);
+                const token = data.login.token;
+                console.log(token);
 
-            if (response.ok) {
+                if (!token) {
+                    return alert('Something went wrong with the login.');
+                }
+
+                Auth.login(token);
                 document.location.replace('/');
-            } else {
-                alert('Failed to log in');
+            } catch (e) {
+                console.log(e);
             }
         }
+
+        return alert('Missing email or password.');
     };
 
     return (
